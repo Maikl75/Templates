@@ -1,0 +1,323 @@
+{
+  "name": "Innovation Manager",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Idee",
+        "formDescription": "Ich hab eine Idee",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "die Idee Title",
+              "placeholder": "Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Idee Beschreibung",
+              "fieldType": "textarea",
+              "placeholder": "Beschreibung",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Name",
+              "fieldType": "email",
+              "placeholder": "Email",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -120,
+        -20
+      ],
+      "id": "fdb6462e-55f7-4db2-8dd6-1a7dbb6ddc23",
+      "name": "On form submission",
+      "webhookId": "ddab0e23-26ba-4428-b491-0628efa31ea4"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Hello woie geht es dir ich bin der Innovation Master und bewerte deinen Vorschlag, bitte prüfe die Idee mit Titel  {{ $json['die Idee Title'] }} und beschreibung {{ $json['Idee Beschreibung'] }} und bewertung das Potential mit dem Scoring Tool Google Sheet und gib mir eine eien Bewertung von 1 bis 3. 1 ist ",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        120,
+        -20
+      ],
+      "id": "71b2af94-eb68-4069-ac65-dee13999c2d5",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        180
+      ],
+      "id": "6d00b8cc-ca82-421d-8b7d-6ad1527240ee",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "10j84yFJlqMq7YGbwHUTEUFHPIj-56yGx6W4v8rgHrnA",
+          "mode": "list",
+          "cachedResultName": "scoring",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10j84yFJlqMq7YGbwHUTEUFHPIj-56yGx6W4v8rgHrnA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Award",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/10j84yFJlqMq7YGbwHUTEUFHPIj-56yGx6W4v8rgHrnA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        240,
+        200
+      ],
+      "id": "2c67652f-ff36-41b4-9ad2-10716d431bf1",
+      "name": "Google Sheets2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2d8fd572-00c0-495c-8b0f-ef19eb7e7510",
+              "leftValue": "3",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        -20
+      ],
+      "id": "5ea8844a-8973-4710-9137-e2b824cda105",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "lifedots@gmail.com",
+        "subject": "Einladung zum Pitch",
+        "message": "Klasse Idee wir machen das, bereit für Meeting?",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        700,
+        80
+      ],
+      "id": "00461820-e1df-46f4-8bcc-48c28abcfb39",
+      "name": "Gmail",
+      "webhookId": "4c90e5c0-e2d0-4fc0-a094-4a46517614da",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wvtQ6r43pKFoQZBY",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "lifedots@gmail.com",
+        "subject": "Feedback Idee",
+        "message": "Wir haben deine Idee geprüft, du mußt da noch nacharbeiter der Score war leider zu gering, bitte versuche deine Idee noch besser auf Kunden auszurichten",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        700,
+        -120
+      ],
+      "id": "0ada6eed-a9f8-442b-ad1d-159c21393390",
+      "name": "Gmail1",
+      "webhookId": "1f024b80-a26e-4271-bd08-60025328dbeb",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wvtQ6r43pKFoQZBY",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"Socring\": \"Bewertung\",\n\t\"Bewertung\": [\"1\", \"2\", \"3\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        200
+      ],
+      "id": "dd708a05-72ca-4bc6-ab22-6b5ce04b466a",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        540,
+        200
+      ],
+      "id": "90205998-4d64-4672-ad63-e7b28d7f9a60",
+      "name": "Gmail2",
+      "webhookId": "1b2e5bbd-ce98-49fc-9f73-b6b73350e107"
+    }
+  ],
+  "pinData": {
+    "AI Agent": [
+      {
+        "json": {
+          "output": "Ich habe die Idee \"KI Workshop und Beschreibung für Kinder\" mithilfe eines Scoring-Tools in Google Sheets bewertet. Hier sind die Ergebnisse der Bewertung:\n\n1. **Nachhaltig und Vertrauen Kunden**:\n   - **Bewertung**: 0.2\n   - **Beispiele**: Die Idee beschreibt, wie Kundenvertrauen aufgebaut werden kann, mit Schlüsselwörtern wie Energieeinsparung, Wiederverwendung und Transparenz.\n\n2. **Focus Kunde Potentiale Umsatz**:\n   - **Bewertung**: 0.3\n   - **Beispiele**: Die Idee beschreibt, wie mehr Umsatz durch den Verkauf von Dienstleistungen und Produkten erzielt werden kann, mit Schlüsselwörtern wie mehr Umsatz und mehr Verkäufe.\n\n3. **Einsparung Kosten**:\n   - **Bewertung**: 0.2\n   - **Beispiele**: Die Idee beschreibt, wie Kosten eingespart werden können, z.B. durch Einsparungen bei Agenturen und Dienstleistungen.\n\n4. **Innovation neuer Kunden Umsatz**:\n   - **Bewertung**: 0.3\n   - **Beispiele**: Die Idee beschreibt, wie neue Dienstleistungen und Produkte Umsatz generieren können, mit Schlüsselwörtern wie Innovation und neue Kunden.\n\n### Gesamte Bewertung:\n- Die Gesamtbewertung für die Idee liegt zwischen 1 und 3.\n  - **Gesamtbewertung**: 0.2 (Nachhaltigkeit) + 0.3 (Umsatzpotential) + 0.2 (Kosteneinsparung) + 0.3 (Innovation) = 1.0\n\n### Zusammenfassung:\nIch würde der Idee eine **Bewertung von 1** geben, was bedeutet, dass sie im aktuellen Kontext als **schwach** angesehen wird. Es gibt Raum für Verbesserung, insbesondere in den Bereichen Kundenvertrauen und Kosteneffizienz."
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "611ab14c-ebad-4fed-bce2-4b57cadb07bc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "68bc16a493202e0f5d0fb0fe8fae1f1e0798fd528aca2434f96c07cd92ac55bb"
+  },
+  "id": "f7PXru81syZ54lXs",
+  "tags": [
+    {
+      "createdAt": "2025-02-10T19:57:43.633Z",
+      "updatedAt": "2025-02-10T19:57:43.633Z",
+      "id": "YkjK4bhKHyNQDfSl",
+      "name": "productive"
+    }
+  ]
+}
